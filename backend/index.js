@@ -92,20 +92,10 @@ app.post('/api/register', async (req, res) => {
   try {
     const hash = await bcrypt.hash(password, 10);
     console.log('Password hashata');
-    const verifyToken = crypto.randomBytes(32).toString('hex');
-    await db.run('INSERT INTO users (username, email, password, displayName, bio, avatar, verifyToken) VALUES (?, ?, ?, ?, ?, ?, ?)', username, email, hash, displayName || '', bio || '', avatar || '', verifyToken);
-    console.log('Utente inserito nel DB');
-    // Send verification email
-    const verifyUrl = `${BASE_URL}/api/verify-email?token=${verifyToken}`;
-    console.log('Invio mail a', email, 'con link:', verifyUrl);
-    await transporter.sendMail({
-      from: GMAIL_USER,
-      to: email,
-      subject: 'Verifica il tuo account Troto',
-      html: `<h2>Benvenuto su Troto!</h2><p>Per completare la registrazione, clicca sul link qui sotto:</p><a href="${verifyUrl}">${verifyUrl}</a>`
-    });
-    console.log('Mail inviata con successo');
-    return res.json({ ok: true, message: 'Registrazione riuscita. Controlla la tua email per verificare il tuo account.' });
+    // Salta la verifica email: utente subito verificato
+    await db.run('INSERT INTO users (username, email, password, displayName, bio, avatar, verified) VALUES (?, ?, ?, ?, ?, ?, 1)', username, email, hash, displayName || '', bio || '', avatar || '');
+    console.log('Utente inserito nel DB (verificato)');
+    return res.json({ ok: true, message: 'Registrazione riuscita. Ora puoi accedere.' });
   } catch (e) {
     console.error('Errore durante la registrazione:', e);
     if (e.message.includes('UNIQUE constraint failed: users.username')) {
@@ -134,7 +124,7 @@ app.post('/api/login', async (req, res) => {
   if (!email || !password) return res.status(400).json({ error: 'Email e password obbligatori' });
   const user = await db.get('SELECT * FROM users WHERE email = ?', email);
   if (!user) return res.status(400).json({ error: 'Credenziali non valide' });
-  if (!user.verified) return res.status(403).json({ error: 'Account non verificato. Controlla la tua email.' });
+  // Salta il controllo verified
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) return res.status(400).json({ error: 'Credenziali non valide' });
   const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '7d' });
@@ -240,7 +230,7 @@ app.post('/api/posts/:id/like', authMiddleware, async (req, res) => {
 
 // --- START ---
 initDb().then(() => {
-  app.listen(PORT, () => {
-    console.log('Troto backend listening on http://localhost:' + PORT);
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log('Troto backend listening on http://0.0.0.0:' + PORT);
   });
 }); 

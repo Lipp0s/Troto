@@ -25,7 +25,7 @@ function loadData(key, fallback) {
 }
 
 // --- CONFIG ---
-const API_URL = 'http://localhost:4000/api';
+const API_URL = 'http://192.168.0.52:4000/api';
 
 // --- JWT Token ---
 function saveToken(token) { localStorage.setItem('troto-token', token); }
@@ -105,7 +105,7 @@ let profileEditAvatarData = '';
 const showLoginTab = document.getElementById('show-login-tab');
 const showRegisterTab = document.getElementById('show-register-tab');
 const loginForm = document.getElementById('login-form');
-const loginUsername = document.getElementById('login-username');
+const loginEmail = document.getElementById('login-email');
 const loginPassword = document.getElementById('login-password');
 const loginError = document.getElementById('login-error');
 const registerForm = document.getElementById('register-form');
@@ -124,8 +124,8 @@ function renderApp() {
     if (!loadToken()) {
         authView.style.display = 'flex';
         mainView.style.display = 'none';
-        loginUsername.value = '';
-        loginUsername.focus();
+        loginEmail.value = '';
+        loginEmail.focus();
         return;
     }
     authView.style.display = 'none';
@@ -337,14 +337,14 @@ registerAvatar.onchange = e => {
 loginForm.onsubmit = async e => {
     e.preventDefault();
     loginError.textContent = '';
-    const username = loginUsername.value.trim();
+    const email = loginEmail.value.trim();
     const password = loginPassword.value;
-    if (!username || !password) {
-        loginError.textContent = 'Inserisci username e password';
+    if (!email || !password) {
+        loginError.textContent = 'Inserisci email e password';
         return;
     }
     try {
-        const data = await api('/login', { method: 'POST', body: { username, password } });
+        const data = await api('/login', { method: 'POST', body: { email, password } });
         saveToken(data.token);
         currentUser = data.username;
         await loadMyProfile();
@@ -1026,4 +1026,18 @@ profileEditForm.onsubmit = e => {
     saveProfileData(currentUser, { displayName, bio, avatar });
     hideEditProfile();
     renderProfile();
-}; 
+};
+
+// Bolle animate pesciose
+function createBubble() {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    const size = 16 + Math.random() * 48;
+    bubble.style.width = size + 'px';
+    bubble.style.height = size + 'px';
+    bubble.style.left = (Math.random() * 100) + 'vw';
+    bubble.style.animationDuration = (10 + Math.random() * 10) + 's';
+    document.body.appendChild(bubble);
+    setTimeout(() => bubble.remove(), 16000);
+}
+setInterval(createBubble, 1200); 
