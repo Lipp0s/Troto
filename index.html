@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troto - Social Media</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Login/Register View -->
+        <div id="auth-view" class="centered-view">
+            <div class="auth-card">
+                <h1 class="logo"><i class="fas fa-bolt"></i> TROTO</h1>
+                <div id="auth-tabs">
+                    <button id="show-login-tab" class="btn btn-primary">Accedi</button>
+                    <button id="show-register-tab" class="btn btn-outline">Registrati</button>
+                </div>
+                <form id="login-form" style="margin-top:1.5rem;">
+                    <input type="text" id="login-username" placeholder="Username" required autocomplete="username">
+                    <input type="password" id="login-password" placeholder="Password" required autocomplete="current-password">
+                    <button type="submit" class="btn btn-primary">Accedi</button>
+                    <div id="login-error" class="auth-error"></div>
+                </form>
+                <form id="register-form" style="display:none; margin-top:1.5rem;">
+                    <input type="text" id="register-username" placeholder="Username" required autocomplete="username">
+                    <input type="password" id="register-password" placeholder="Password" required autocomplete="new-password">
+                    <input type="text" id="register-displayname" placeholder="Nome visualizzato (opzionale)" maxlength="32">
+                    <textarea id="register-bio" placeholder="Bio (opzionale)" maxlength="120" rows="2"></textarea>
+                    <label style="margin-top:0.5rem;">Avatar:<br>
+                        <input type="file" id="register-avatar" accept="image/*">
+                    </label>
+                    <div id="register-avatar-preview" class="profile-avatar-preview"></div>
+                    <button type="submit" class="btn btn-primary">Registrati</button>
+                    <div id="register-error" class="auth-error"></div>
+                    <div id="register-success" class="auth-success" style="display:none;"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Social App View -->
+        <div id="main-view" style="display:none;">
+            <!-- Header/Nav -->
+            <header class="header">
+                <nav class="nav">
+                    <div class="nav-brand">
+                        <h1><i class="fas fa-bolt"></i> TROTO</h1>
+                    </div>
+                    <ul class="nav-menu">
+                        <li><a href="#" id="nav-feed">Feed</a></li>
+                        <li><a href="#" id="nav-profile">Profilo</a></li>
+                    </ul>
+                    <div class="nav-actions">
+                        <span id="current-user"></span>
+                        <button class="btn btn-outline" id="logout-btn">Logout</button>
+                    </div>
+                </nav>
+            </header>
+
+            <!-- Feed View -->
+            <main id="feed-view" class="main-content">
+                <section class="new-post-section">
+                    <form id="new-post-form">
+                        <input type="text" id="new-post-text" placeholder="Cosa stai pensando?" maxlength="200" required>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Pubblica</button>
+                    </form>
+                </section>
+                <section id="feed-posts" class="posts-list">
+                    <!-- Post caricati da JS -->
+                </section>
+            </main>
+
+            <!-- Profile View -->
+            <main id="profile-view" class="main-content" style="display:none;">
+                <section class="profile-header">
+                    <div class="profile-avatar" id="profile-avatar"></div>
+                    <div>
+                        <h2 id="profile-username"></h2>
+                        <p id="profile-post-count"></p>
+                        <button class="btn btn-outline" id="edit-profile-btn">Modifica profilo</button>
+                    </div>
+                </section>
+                <section id="profile-bio-section" class="profile-bio-section"></section>
+                <section id="profile-edit-section" style="display:none;">
+                    <form id="profile-edit-form" class="profile-edit-form">
+                        <label>Avatar:<br>
+                            <input type="file" id="profile-avatar-input" accept="image/*">
+                        </label>
+                        <div id="profile-avatar-preview" class="profile-avatar-preview"></div>
+                        <label>Nome visualizzato:<br>
+                            <input type="text" id="profile-displayname-input" maxlength="32">
+                        </label>
+                        <label>Bio:<br>
+                            <textarea id="profile-bio-input" maxlength="120" rows="2"></textarea>
+                        </label>
+                        <button type="submit" class="btn btn-primary">Salva</button>
+                        <button type="button" class="btn btn-outline" id="cancel-edit-profile-btn">Annulla</button>
+                    </form>
+                </section>
+                <section id="profile-posts" class="posts-list">
+                    <!-- Post utente caricati da JS -->
+                </section>
+            </main>
+            <!-- Public Profile View -->
+            <main id="public-profile-view" class="main-content" style="display:none;">
+                <section class="profile-header">
+                    <div class="profile-avatar" id="public-profile-avatar"></div>
+                    <div>
+                        <h2 id="public-profile-username"></h2>
+                        <p id="public-profile-post-count"></p>
+                    </div>
+                </section>
+                <section id="public-profile-bio-section" class="profile-bio-section"></section>
+                <section id="public-profile-posts" class="posts-list"></section>
+                <button class="btn btn-outline" id="close-public-profile-btn" style="margin-top:2rem;">Torna al feed</button>
+            </main>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
